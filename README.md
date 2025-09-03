@@ -26,3 +26,9 @@ in VS Code:
 - Open `README.md`
 - right-click > **Open Preview**
 - or shortcut: `Cmd + Shift + V`
+
+###Time Spent
+- Environments review and setup (VS code, nvm, Next.js) ~ 2 hours
+- Learning and reviewing basics (JavaScript, Next.js, React, Git/Github, Readme): ~ 5 hours
+- Setting up page.tsx (html) ~ 2 hours
+- Total so far: ~ 9 hours
