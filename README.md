@@ -1,33 +1,34 @@
-#User Dashboard Trial
+ User Dashboard Trial#
 
 A simple user dashboard built with **Next.js** and **Tailwind CSS**
 
-##Getting Started
+## Getting Started
 
 1. Install dependencies:
     ```bash
     npm install
 2. Run dev server:
-    ```npm run dev
+    ```bash
+    npm run dev
 3. Open http://localhost:3000
 
-##Features
+## Features
 - Dashboard list view
 - Live search by name
 - Detail page with edit form
 
-##Tech Stack
+## Tech Stack
 - Next.js (React + Node.js)
 - Tailwind CSS
 - Typescript
 
-###How to Preview
+### How to Preview
 in VS Code:
 - Open `README.md`
 - right-click > **Open Preview**
 - or shortcut: `Cmd + Shift + V`
 
-###Time Spent
+### Time Spent
 - Environments review and setup (VS code, nvm, Next.js) ~ 2 hours
 - Learning and reviewing basics (JavaScript, Next.js, React, Git/Github, Readme): ~ 5 hours
 - Setting up page.tsx (html) ~ 2 hours

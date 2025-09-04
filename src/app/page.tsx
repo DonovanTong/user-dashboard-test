@@ -1,15 +1,27 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { User } from "@/lib/users";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Home() {
-  const users = [
-    { id: "1", name: "Ava", occupation: "Designer" },
-    { id: "2", name: "Ben", occupation: "Engineer" },
-    { id: "3", name: "Morgan", occupation: "Teacher" },
-  ];
-
+  const [users, setUsers] = useState<User[]>([]);
   const [q, setQ] = useState("");
+
+  useEffect(() => {
+  async function loadUsers() {
+    try {
+      const res = await fetch("/api/users");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setUsers(data);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+  }
+
+  loadUsers();
+}, []);
+
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
