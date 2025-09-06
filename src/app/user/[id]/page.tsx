@@ -14,27 +14,18 @@ type User = {
 };
 
 export default function UserPage() {
-  // Read the dynamic route param /user/[id]
   const params = useParams<{ id: string }>();
-  const id =
-    typeof params.id === "string"
-      ? params.id
-      : Array.isArray(params.id)
-      ? params.id[0]
-      : "";
+  const id = typeof params.id === "string" ? params.id : Array.isArray(params.id) ? params.id[0] : "";
 
-  // Loading / data state
   const [user, setUser] = useState<User | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
-  // Form state
   const [occupation, setOccupation] = useState("");
   const [hobbies, setHobbies] = useState("");
   const [family, setFamily] = useState("");
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
 
-  // Fetch the user once when we have an id
   useEffect(() => {
     if (!id) return;
     (async () => {
@@ -43,7 +34,6 @@ export default function UserPage() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data: User = await res.json();
         setUser(data);
-        // initialize the form fields
         setOccupation(data.occupation ?? "");
         setHobbies((data.hobbies ?? []).join(", "));
         setFamily(data.family ?? "");
@@ -65,10 +55,7 @@ export default function UserPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           occupation: occupation.trim(),
-          hobbies: hobbies
-            .split(",")
-            .map((h) => h.trim())
-            .filter(Boolean),
+          hobbies: hobbies.split(",").map((h) => h.trim()).filter(Boolean),
           family: family.trim(),
         }),
       });
@@ -84,136 +71,86 @@ export default function UserPage() {
     }
   }
 
-  // Loading & error UI
   if (status === "loading") {
     return (
-      <main style={{ padding: 24 }}>
-        <Link href="/" style={{ textDecoration: "underline", fontSize: 13 }}>
-          ← Back
-        </Link>
-        <p style={{ marginTop: 12 }}>Loading…</p>
+      <main className="mx-auto max-w-2xl p-4">
+        <Link href="/" className="text-sm underline">← Back</Link>
+        <p className="mt-3">Loading…</p>
       </main>
     );
   }
 
   if (status === "error" || !user) {
     return (
-      <main style={{ padding: 24 }}>
-        <Link href="/" style={{ textDecoration: "underline", fontSize: 13 }}>
-          ← Back
-        </Link>
-        <p style={{ marginTop: 12 }}>User not found.</p>
+      <main className="mx-auto max-w-2xl p-4">
+        <Link href="/" className="text-sm underline">← Back</Link>
+        <p className="mt-3">User not found.</p>
       </main>
     );
   }
 
-  // Main UI
   return (
-    <main style={{ padding: 24, maxWidth: 800, margin: "0 auto" }}>
-      <Link href="/" style={{ textDecoration: "underline", fontSize: 13 }}>
-        ← Back
-      </Link>
+    <main className="mx-auto max-w-2xl p-4">
+      <Link href="/" className="text-sm underline">← Back</Link>
 
-      <h1 style={{ fontSize: 24, fontWeight: 600, marginTop: 12 }}>
-        {user.name}
-      </h1>
-      <p style={{ color: "#666" }}>{user.email}</p>
+      <h1 className="mt-3 text-2xl font-semibold">{user.name}</h1>
+      <p className="text-gray-600">{user.email}</p>
 
-      <section
-        style={{
-          marginTop: 16,
-          border: "1px solid #e5e5e5",
-          borderRadius: 8,
-          padding: 16,
-        }}
-      >
+      <section className="mt-4 space-y-2 rounded-lg border border-gray-200 p-4">
         <div>
-          <strong>Occupation:</strong> {user.occupation || "—"}
+          <div className="text-xs uppercase text-gray-500">Occupation</div>
+          <div>{user.occupation || "—"}</div>
         </div>
         <div>
-          <strong>Hobbies:</strong> {user.hobbies?.join(", ") || "—"}
+          <div className="text-xs uppercase text-gray-500">Hobbies</div>
+          <div>{user.hobbies?.join(", ") || "—"}</div>
         </div>
         <div>
-          <strong>Family:</strong> {user.family || "—"}
+          <div className="text-xs uppercase text-gray-500">Family</div>
+          <div>{user.family || "—"}</div>
         </div>
       </section>
 
-      <section
-        style={{
-          marginTop: 16,
-          border: "1px solid #e5e5e5",
-          borderRadius: 8,
-          padding: 16,
-        }}
-      >
-        <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>
-          Edit info
-        </h2>
+      <section className="mt-6 rounded-lg border border-gray-200 p-4">
+        <h2 className="mb-3 text-lg font-medium">Edit info</h2>
 
-        <label style={{ display: "block", marginBottom: 8 }}>
-          <div>Occupation</div>
+        <label className="mb-3 block">
+          <span className="text-sm text-gray-700">Occupation</span>
           <input
+            className="mt-1 w-full rounded-md border border-gray-300 p-2 outline-none focus:border-gray-400"
             value={occupation}
             onChange={(e) => setOccupation(e.target.value)}
-            style={{
-              width: "100%",
-              padding: 10,
-              border: "1px solid #ddd",
-              borderRadius: 8,
-            }}
           />
         </label>
 
-        <label style={{ display: "block", marginBottom: 8 }}>
-          <div>Hobbies (comma-separated)</div>
+        <label className="mb-3 block">
+          <span className="text-sm text-gray-700">Hobbies (comma-separated)</span>
           <input
+            className="mt-1 w-full rounded-md border border-gray-300 p-2 outline-none focus:border-gray-400"
             value={hobbies}
             onChange={(e) => setHobbies(e.target.value)}
-            style={{
-              width: "100%",
-              padding: 10,
-              border: "1px solid #ddd",
-              borderRadius: 8,
-            }}
           />
         </label>
 
-        <label style={{ display: "block", marginBottom: 12 }}>
-          <div>Family</div>
+        <label className="mb-4 block">
+          <span className="text-sm text-gray-700">Family</span>
           <input
+            className="mt-1 w-full rounded-md border border-gray-300 p-2 outline-none focus:border-gray-400"
             value={family}
             onChange={(e) => setFamily(e.target.value)}
-            style={{
-              width: "100%",
-              padding: 10,
-              border: "1px solid #ddd",
-              borderRadius: 8,
-            }}
           />
         </label>
 
         <button
           onClick={save}
           disabled={saving}
-          style={{
-            padding: "8px 12px",
-            border: "1px solid #ddd",
-            borderRadius: 8,
-            cursor: "pointer",
-            opacity: saving ? 0.6 : 1,
-          }}
+          className="rounded-md border border-gray-300 px-3 py-2 text-sm transition hover:bg-gray-50 disabled:opacity-50"
         >
           {saving ? "Saving..." : "Save changes"}
         </button>
 
         {msg && (
-          <div
-            style={{
-              marginTop: 8,
-              color: msg === "Saved!" ? "green" : "crimson",
-              fontSize: 13,
-            }}
-          >
+          <div className={`mt-2 text-sm ${msg === "Saved!" ? "text-green-600" : "text-red-600"}`}>
             {msg}
           </div>
         )}

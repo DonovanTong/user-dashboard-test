@@ -1,27 +1,24 @@
 "use client";
 
-import { User } from "@/lib/users";
 import { useEffect, useMemo, useState } from "react";
+
+type User = { id: string; name: string; occupation?: string; email?: string };
 
 export default function Home() {
   const [users, setUsers] = useState<User[]>([]);
   const [q, setQ] = useState("");
 
   useEffect(() => {
-  async function loadUsers() {
-    try {
-      const res = await fetch("/api/users");
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      setUsers(data);
-    } catch (err) {
-      console.error("Error fetching users:", err);
-    }
-  }
-
-  loadUsers();
-}, []);
-
+    (async () => {
+      try {
+        const res = await fetch("/api/users");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        setUsers(await res.json());
+      } catch (e) {
+        console.error("Error fetching users:", e);
+      }
+    })();
+  }, []);
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -30,50 +27,39 @@ export default function Home() {
   }, [q, users]);
 
   return (
-    <main style={{ padding: 24, maxWidth: 800, margin: "0 auto" }}>
-      <h1 style={{ fontSize: 24, fontWeight: 600, marginBottom: 8 }}>
-        User Dashboard
-      </h1>
-      <p style={{ color: "#666", fontSize: 14, marginBottom: 16 }}>
-        Type to filter by name
-      </p>
+    <main className="mx-auto max-w-3xl p-4">
+      <header className="mb-6">
+        <h1 className="text-2xl font-semibold">User Dashboard</h1>
+        <p className="text-sm text-gray-500">List, search, and view details</p>
+      </header>
 
-      <input
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Search users..."
-        style={{
-          border: "1px solid #e5e5e5",
-          borderRadius: 8,
-          padding: 12,
-          fontSize: 14,
-          width: "100%",
-          boxSizing: "border-box",
-          marginBottom: 24,
-        }}
-      />
+      <div className="mb-4">
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Search users by name…"
+          className="w-full rounded-md border border-gray-300 p-2 outline-none ring-0 focus:border-gray-400"
+        />
+      </div>
 
-      <ul style={{ display: "grid", gap: 12, gridTemplateColumns: "1fr 1fr" }}>
+      <ul className="grid gap-3 sm:grid-cols-2">
         {filtered.map((u) => (
           <li
             key={u.id}
-            style={{
-              border: "1px solid #e5e5e5",
-              borderRadius: 8,
-              padding: 16,
-            }}
+            className="rounded-lg border border-gray-200 p-4 transition hover:shadow-sm"
           >
-            <a href={`/user/${u.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-              <div style={{ fontWeight: 500 }}>{u.name}</div>
-              <div style={{ color: "#666", fontSize: 14 }}>{u.occupation}</div>
-              <div style={{ marginTop: 8, fontSize: 13, textDecoration: "underline" }}>
-                View details →
-              </div>
+            <div className="mb-1 font-medium">{u.name}</div>
+            <div className="text-sm text-gray-600">{u.occupation || "—"}</div>
+            <a
+              href={`/user/${u.id}`}
+              className="mt-3 inline-block text-sm text-blue-600 underline"
+            >
+              View details →
             </a>
           </li>
         ))}
         {filtered.length === 0 && (
-          <li style={{ color: "#666", fontSize: 14 }}>No users found</li>
+          <li className="text-sm text-gray-500">No users found.</li>
         )}
       </ul>
     </main>
